@@ -1,7 +1,6 @@
-exports.handler = function(event, context, callback) {
-
- callback(null, {
+exports.handler = async (event, context) => {
+  return {
     statusCode: 200,
-    body: "Salut, yaya"
-    });
-}
+    body: "Salut, Yaya"
+  };
+};
