@@ -1,4 +1,6 @@
-let { GITHUB_API } = process.env;
+import fetch from 'node-fetch'
+
+let { GITHUB_API } = process.env
 
 /*
 function arrayBufferToBase64(buffer) {
@@ -12,22 +14,25 @@ function arrayBufferToBase64(buffer) {
 */
 
 exports.handler = async (event, context) => {
-		let baseUrl = 'https://api.github.com/repos/laem/publi.codes/contents' 
+	let baseUrl = 'https://api.github.com/repos/laem/publi.codes/contents'
 
-    let url = baseUrl + (event.queryStringParameters.filePath || '/co2.yaml');
+	let url = baseUrl + (event.queryStringParameters.filePath || '/co2.yaml')
 
-   var headers = new Headers({'Authorization': `token ${GITHUB_API}`, 'Accept': 'application/vnd.github.v3.raw'});
-    var options = {
-      method: 'GET',
-      headers: headers,
-      mode: 'cors',
-      cache: 'default'
-    };
-    var request = new Request(url);
+	var headers = {
+		Authorization: `token ${GITHUB_API ||
+			'2623ebf59fa364f47270a1174fbc60b434f01604'}`,
+		Accept: 'application/vnd.github.v3.raw'
+	}
+	var options = {
+		method: 'GET',
+		headers: headers,
+		mode: 'cors',
+		cache: 'default'
+	}
 
-		return    fetch(request, options).then((response) => {
-    console.log(response)      
+	console.log(url, options)
 
-      }).catch(error => ({ statusCode: 422, body: error }));
-
-    }
+	return fetch(url, options).then(response => {
+		console.log(response.blob())
+	})
+}
