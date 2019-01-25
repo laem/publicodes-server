@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import yaml from 'js-yaml'
 
-let { GITHUB_API } = process.env
+let { GITHUB_TOKEN } = process.env
 
 /*
 function arrayBufferToBase64(buffer) {
@@ -15,13 +15,15 @@ function arrayBufferToBase64(buffer) {
 */
 
 exports.handler = async (event, context) => {
-	let baseUrl = 'https://api.github.com/repos/laem/publi.codes/contents'
-
-	let url = baseUrl + (event.queryStringParameters.filePath || '/co2.yaml')
-
+	let baseUrl = 'https://api.github.com/repos/',
+		repo = event.queryStringParameters.repo,
+		url =
+			baseUrl +
+			repo +
+			'/contents/' +
+			(event.queryStringParameters.filePath || 'co2.yaml')
 	var headers = {
-		Authorization: `token ${GITHUB_API ||
-			'ec0ab7970dd17ca2916c1cfc79f0a8c03b1fe9e2'}`,
+		Authorization: `token ${GITHUB_TOKEN}`,
 		Accept: 'application/vnd.github.v3.raw'
 	}
 	var options = {
@@ -31,15 +33,17 @@ exports.handler = async (event, context) => {
 		cache: 'default'
 	}
 
-	console.log(url, options)
-
 	return fetch(url, options)
 		.then(response => {
 			return response.text()
 		})
 		.then(text => ({
 			statusCode: 200,
-			headers: { 'Content-Type': 'application/json;charset=utf-8' },
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8',
+
+				'Access-Control-Allow-Origin': '*'
+			},
 			body: JSON.stringify(yaml.safeLoad(text))
 		}))
 		.catch(error => ({ statusCode: 422, body: String(error) }))

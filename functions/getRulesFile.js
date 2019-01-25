@@ -12663,7 +12663,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let {
-  GITHUB_API
+  GITHUB_TOKEN
 } = process.env;
 /*
 function arrayBufferToBase64(buffer) {
@@ -12677,10 +12677,11 @@ function arrayBufferToBase64(buffer) {
 */
 
 exports.handler = async (event, context) => {
-  let baseUrl = 'https://api.github.com/repos/laem/publi.codes/contents';
-  let url = baseUrl + (event.queryStringParameters.filePath || '/co2.yaml');
+  let baseUrl = 'https://api.github.com/repos/',
+      repo = event.queryStringParameters.repo,
+      url = baseUrl + repo + '/contents/' + (event.queryStringParameters.filePath || 'co2.yaml');
   var headers = {
-    Authorization: `token ${GITHUB_API || 'ec0ab7970dd17ca2916c1cfc79f0a8c03b1fe9e2'}`,
+    Authorization: `token ${GITHUB_TOKEN}`,
     Accept: 'application/vnd.github.v3.raw'
   };
   var options = {
@@ -12689,13 +12690,13 @@ exports.handler = async (event, context) => {
     mode: 'cors',
     cache: 'default'
   };
-  console.log(url, options);
   return Object(node_fetch__WEBPACK_IMPORTED_MODULE_0__["default"])(url, options).then(response => {
     return response.text();
   }).then(text => ({
     statusCode: 200,
     headers: {
-      'Content-Type': 'application/json;charset=utf-8'
+      'Content-Type': 'application/json;charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify(js_yaml__WEBPACK_IMPORTED_MODULE_1___default.a.safeLoad(text))
   })).catch(error => ({
