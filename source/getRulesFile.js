@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import yaml from 'js-yaml'
 
 let { GITHUB_API } = process.env
 
@@ -20,7 +21,7 @@ exports.handler = async (event, context) => {
 
 	var headers = {
 		Authorization: `token ${GITHUB_API ||
-			'2623ebf59fa364f47270a1174fbc60b434f01604'}`,
+			'ec0ab7970dd17ca2916c1cfc79f0a8c03b1fe9e2'}`,
 		Accept: 'application/vnd.github.v3.raw'
 	}
 	var options = {
@@ -32,7 +33,14 @@ exports.handler = async (event, context) => {
 
 	console.log(url, options)
 
-	return fetch(url, options).then(response => {
-		console.log(response.blob())
-	})
+	return fetch(url, options)
+		.then(response => {
+			return response.text()
+		})
+		.then(text => ({
+			statusCode: 200,
+			headers: { 'Content-Type': 'application/json;charset=utf-8' },
+			body: JSON.stringify(yaml.safeLoad(text))
+		}))
+		.catch(error => ({ statusCode: 422, body: String(error) }))
 }
