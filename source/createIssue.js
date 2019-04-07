@@ -16,7 +16,7 @@ exports.handler = async (event, context) => {
 			headers: headers,
 			mode: 'cors',
 			cache: 'default',
-			body: JSON.stringify({ title, body })
+			body: JSON.stringify({ title, body, labels: ['Contribution'] })
 		}
 
 	return fetch(url, options)
