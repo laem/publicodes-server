@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
 
 				'Access-Control-Allow-Origin': '*'
 			},
-			body: JSON.stringify({ url: json.url })
+			body: JSON.stringify({ url: json['html_url'] })
 		}))
 		.catch(error => ({ statusCode: 422, body: String(error) }))
 }
