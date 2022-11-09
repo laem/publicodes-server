@@ -5,7 +5,7 @@ let { GITHUB_TOKEN } = process.env
 
 exports.handler = async (event, context) => {
 	let baseUrl = 'https://api.github.com/repos/',
-		{ repo, title, body } = event.queryStringParameters,
+		{ repo, title, body, labels } = event.queryStringParameters,
 		url = baseUrl + repo + '/issues',
 		headers = {
 			Authorization: `token ${GITHUB_TOKEN}`,
@@ -16,7 +16,7 @@ exports.handler = async (event, context) => {
 			headers: headers,
 			mode: 'cors',
 			cache: 'default',
-			body: JSON.stringify({ title, body, labels: ['Contribution'] })
+			body: JSON.stringify({ title, body, labels: labels || ['Contribution'] })
 		}
 
 	return fetch(url, options)
