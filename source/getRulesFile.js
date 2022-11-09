@@ -1,4 +1,3 @@
-import fetch from 'node-fetch'
 import yaml from 'js-yaml'
 
 let { GITHUB_TOKEN } = process.env
